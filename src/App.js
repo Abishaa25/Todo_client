@@ -2,6 +2,8 @@ import "./App.css";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [record, setRecord] = useState([]);
@@ -10,7 +12,6 @@ function App() {
   useEffect(() => {
     axios.get("http://localhost:8000/employe").then((res) => {
       setRecord(res.data);
-      console.log(res.data);
     });
   }, [refresh]);
 
@@ -18,8 +19,18 @@ function App() {
     axios
       .delete("http://localhost:8000/employe/" + id)
       .then((res) => {
-        alert("Record Deleted !")
-        history('/')
+        toast.success('Record Deleted successfully', {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        setTimeout(() => {
+          history('/');
+        },2000)
         setrefresh(refresh+1)
       })
       .catch((err) => {
@@ -49,7 +60,7 @@ function App() {
         <tbody className="thead-light">
           {record.map((data) => {
             return (
-              <tr>
+              <tr key={data.id}> 
                 <td>{data.id}</td>
                 <td>{data.name}</td>
                 <td>{data.mail}</td>
@@ -70,6 +81,8 @@ function App() {
           })}
         </tbody>
       </table>
+      <ToastContainer />
+
     </div>
     </div>
   );
